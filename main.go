@@ -9,13 +9,6 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-//"fmt"
-/*
-	"math/rand"
-	"net/http"
-	"github.com/gin-gonic/gin"
-	"errors" */
-
 type question struct { // the question object
 	ID       int    `json:"id"`
 	Question string `json:"question"`
@@ -25,7 +18,7 @@ type question struct { // the question object
 	Answer4  string `json:"answer4"`
 }
 
-var questions = []question{
+var questions = []question{ // all our different objects
 	{
 		ID:       1,
 		Question: "How long was Barack Obama president for?",
@@ -52,12 +45,14 @@ func getRandomQuestion() int {
 	return pick
 }
 
-var curr_question = getRandomQuestion()
-
 func getQuestion(c *gin.Context) {
-	c.IndentedJSON(http.StatusOK, questions)
+	var curr_question = getRandomQuestion() - 1 // gets the ID of a random question
+	var response = questions[curr_question]     // gets the rest of the data from the ID
+	c.IndentedJSON(http.StatusOK, response)
 }
 
 func main() {
-
+	router := gin.Default()              // Starts gin
+	router.GET("/question", getQuestion) // our endpoint
+	router.Run("localhost:8080")         // where we run the server
 }
