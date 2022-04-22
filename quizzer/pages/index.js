@@ -4,7 +4,7 @@ import Router from 'next/router'
 export default function Home() {
 
   const routeChange = () =>{
-    Router.push('https://www.youtube.com/watch?v=dQw4w9WgXcQ') 
+    Router.push('/quiz') 
   }
 
   return (
