@@ -10,6 +10,14 @@ func main() {
 	lambda.Start(Handler)
 }
 
-func Handler() {
-	fmt.Println("Function invoked")
+func Handler(event InputEvent) (string, error) {
+	fmt.Println(event.FirstName)
+	fmt.Println(event.LastName)
+
+	return "it worked", nil
+}
+
+type InputEvent struct {
+	FirstName string `json:"firstname"`
+	LastName  string `json:"lastname"`
 }
