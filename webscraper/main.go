@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/csv"
+	"fmt"
 	"log"
 	"os"
 
@@ -16,21 +17,26 @@ func main() {
 		log.Fatalf("Could not create file, err :%q", err)
 		return
 	}
-	defer file.Close() // closes the file
+
+	defer file.Close()
 
 	writer := csv.NewWriter(file)
 	defer writer.Flush()
 
-	c := colly.NewCollector(
-		colly.AllowedDomains("vg.no"),
-	)
+	c := colly.NewCollector()
 
-	c.OnHTML("article article-extract article-width-full has-article-image has-full-width-image newsroom-vg skin-default", func(e *colly.HTMLElement) {
-
+	// Visiting all links
+	c.OnHTML("a", func(e *colly.HTMLElement) {
+		e.Request.Visit(e.Attr("href"))
 		writer.Write([]string{
-			e.ChildText("h3"),
-			e.ChildText("a"),
+			e.Attr("href"),
 		})
 	})
+
+	c.OnRequest(func(r *colly.Request) {
+		fmt.Println("Visiting", r.URL)
+	})
+
+	c.Visit("https://go-colly.org/")
 
 }
